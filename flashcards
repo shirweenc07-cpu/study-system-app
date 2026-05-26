@@ -1,0 +1,100 @@
+import streamlit as st
+
+# -------------------------
+# SUBJECT DATA
+# -------------------------
+all_cards = {
+    "Biology": [
+        {"q": "What is ATP?", "a": "Energy currency of cells"},
+        {"q": "What is mitochondria?", "a": "Site of aerobic respiration and ATP production"},
+        {"q": "What is DNA?", "a": "Genetic material that stores hereditary information"},
+    ],
+
+    "Chemistry": [
+        {"q": "What is a covalent bond?", "a": "Sharing of electrons between atoms"},
+        {"q": "What is molar mass?", "a": "Mass of 1 mole of substance in g/mol"},
+    ],
+
+    "Math": [
+        {"q": "What is derivative?", "a": "Rate of change of a function"},
+        {"q": "What is quadratic formula?", "a": "x = (-b ± √(b²-4ac)) / 2a"},
+    ],
+
+    "English": [
+        {"q": "What is a metaphor?", "a": "Direct comparison without 'like' or 'as'"},
+        {"q": "What is a thesis statement?", "a": "Main argument of an essay"},
+    ]
+}
+
+# -------------------------
+# TITLE
+# -------------------------
+st.title("📇 Flashcards App")
+
+# -------------------------
+# SUBJECT SELECTOR
+# -------------------------
+subject = st.selectbox("Choose Subject", list(all_cards.keys()))
+
+cards = all_cards[subject]
+
+# -------------------------
+# SESSION STATE SETUP
+# -------------------------
+if "subject" not in st.session_state:
+    st.session_state.subject = subject
+    st.session_state.index = 0
+
+# reset index if subject changes
+if st.session_state.subject != subject:
+    st.session_state.subject = subject
+    st.session_state.index = 0
+
+if "index" not in st.session_state:
+    st.session_state.index = 0
+
+# -------------------------
+# GET CURRENT CARD (IMPORTANT LINE)
+# -------------------------
+card = cards[st.session_state.index]
+
+# -------------------------
+# DISPLAY QUESTION
+# -------------------------
+st.subheader("Question")
+st.write(card["q"])
+
+# -------------------------
+# SHOW ANSWER BUTTON
+# -------------------------
+if "show" not in st.session_state:
+    st.session_state.show = False
+
+def toggle_answer():
+    st.session_state.show = not st.session_state.show
+
+st.button("Show / Hide Answer", on_click=toggle_answer)
+
+if st.session_state.show:
+    st.success(card["a"])
+
+# -------------------------
+# NAVIGATION BUTTONS
+# -------------------------
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("⬅ Previous"):
+        st.session_state.index = (st.session_state.index - 1) % len(cards)
+        st.session_state.show = False
+
+with col2:
+    if st.button("Next ➡"):
+        st.session_state.index = (st.session_state.index + 1) % len(cards)
+        st.session_state.show = False
+
+# -------------------------
+# PROGRESS
+# -------------------------
+st.write("---")
+st.write(f"Card {st.session_state.index + 1} / {len(cards)}")

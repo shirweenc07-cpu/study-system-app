@@ -32,3 +32,7 @@ def edit_task(new_task,new_status,new_due_date,task,status,due_date):
     conn.commit()
     data = c.fetchall()
     return data
+
+def delete_data(task):
+    c.execute('DELETE FROM taskstable WHERE task="{}"'.format(task))
+    conn.commit()

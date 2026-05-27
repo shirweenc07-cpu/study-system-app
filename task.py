@@ -5,7 +5,7 @@ from db_fn import *
 
 def main():
     st.title("To Do")
-    menu = ["Add", "View", "Edit", "Delete", "About"]
+    menu = ["Add", "View", "Edit", "Delete"]
     choice = st.sidebar.selectbox("Menu", menu)
 
     create_table()
@@ -28,8 +28,7 @@ def main():
         st.subheader("View all your tasks")
         result = view_all_data()
         df = pd.DataFrame(result,columns=['Task','Status','Due Date'])
-        with st.expander("View All Tasks"):
-            st.dataframe(df)
+        st.dataframe(df)
         
         with st.expander("Task Status"):
             task_df = df['Status'].value_counts().to_frame()
@@ -44,10 +43,6 @@ def main():
 
     elif choice == "Edit":
         st.subheader("Edit your tasks")
-        result = view_all_data()
-        df = pd.DataFrame(result,columns=['Task','Status','Due Date'])
-        with st.expander("Current Tasks"):
-            st.dataframe(df)
         
         #st.write(view_unique_task())
         list_of_tasks = [i[0] for i in view_unique_task()]
@@ -56,7 +51,7 @@ def main():
         selected_task = st.selectbox("Task To Edit",list_of_tasks)
 
         selected_result = get_task(selected_task)
-        st.write(selected_result)
+        #st.write(selected_result)
         if selected_result:
             task = selected_result[0][0]
             status = selected_result[0][1]
@@ -82,8 +77,22 @@ def main():
 
 
     elif choice == "Delete":
-        st.subheader("Remove a task")
+        st.subheader("Delete a task")
 
+        list_of_tasks = [i[0] for i in view_unique_task()]
+
+        selected_task = st.selectbox("Task To Delete",list_of_tasks)
+        st.warning(f"Are you sure you want to delete {selected_task}?")
+        if st.button("Delete Task"):
+            delete_data(selected_task)
+            st.success(f"Task {selected_task} has been successfully deleted")
+
+        new_result = view_all_data()
+        new_df = pd.DataFrame(new_result,columns=['Task','Status','Due Date'])
+        with st.expander("Updated Task List"):
+            st.dataframe(new_df)
+
+                
 
 if __name__ == '__main__':
     main()

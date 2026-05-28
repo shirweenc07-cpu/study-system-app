@@ -59,11 +59,11 @@ def main():
 
             col1, col2 = st.columns(2)
 
-        with col1:
-            new_task = st.text_area("Task To Do",task)
-        with col2:
-            new_status = st.selectbox(status, ["To Do", "In Progress", "Complete"])
-            new_due_date = st.date_input(due_date)
+            with col1:
+                new_task = st.text_area("Task To Do",task)
+            with col2:
+                new_status = st.selectbox(status, ["To Do", "In Progress", "Complete"])
+                new_due_date = st.date_input(due_date)
 
         if st.button("Edit Task"):
             edit_task(new_task,new_status,new_due_date,task,status,due_date)
